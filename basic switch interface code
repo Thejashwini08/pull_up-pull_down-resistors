@@ -1,0 +1,41 @@
+#pragma config FOSC = INTRC_NOCLKOUT // Oscillator Selection
+#pragma config WDTE = OFF            // Watchdog Timer Enable
+#pragma config PWRTE = ON            // Power-up Timer Enable
+#pragma config MCLRE = ON            // MCLR Pin Function
+#pragma config CP = OFF              // Code Protection
+#pragma config CPD = OFF             // Data Code Protection
+#pragma config BOREN = ON            // Brown Out Reset
+#pragma config IESO = OFF            // Internal/External Switchover
+#pragma config FCMEN = OFF           // Fail-Safe Clock Monitor
+#pragma config LVP = OFF             // Low Voltage Programming
+#include <xc.h>
+#define _XTAL_FREQ 6000000  
+
+void main(void) {
+    // PORT Configuration
+    TRISC = 0x1E;   // RC1–RC4 as input (0001 1110)
+    TRISD = 0x00;   // PORTD as output
+    PORTD = 0x00;   // Clear PORTD
+
+    while (1) {
+        unsigned char value = PORTC & 0x1E;  // Mask RC1–RC4
+
+        switch (value) {
+            case 0x1E:  // No button pressed
+                PORTD = 0x00; 
+                break;
+            case 0x1C:  // S1 Pressed
+                PORTD = 0x20; // RD5 = 1
+                break;
+            case 0x1A:  // S2 Pressed
+                PORTD = 0x08; // RD3 = 1
+                break;
+            case 0x16:  // S3 Pressed 
+                PORTD = 0x28; // RD5 = 1, RD3 = 1
+                break;
+            case 0x0E:  // S4 Pressed 
+                PORTD = 0x00; // All outputs OFF
+                break;
+        }
+    }
+}
