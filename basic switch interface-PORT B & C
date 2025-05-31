@@ -1,0 +1,42 @@
+#include <xc.h>
+
+// Configuration Bits
+#pragma config FOSC = INTRC_NOCLKOUT
+#pragma config WDTE = OFF
+#pragma config PWRTE = ON
+#pragma config MCLRE = ON
+#pragma config CP = OFF
+#pragma config CPD = OFF
+#pragma config BOREN = ON
+#pragma config IESO = OFF
+#pragma config FCMEN = OFF
+#pragma config LVP = OFF
+
+#define _XTAL_FREQ 6000000  // 6 MHz
+
+void main(void) {
+    unsigned char value;
+
+    TRISB = 0xF0;  // Set PORTB as input
+    PORTB = 0x00;  // Clear PORTB
+    TRISC = 0x00;  // Set PORTC as output
+    PORTC = 0x00;  // Clear PORTC
+
+    while (1) {
+        value = PORTB;  // Read input from PORTB
+        switch (value) {
+            case 0xE0:     // 1110 0000
+                PORTC = 0x02;  // 0000 0010
+                break;
+            case 0xD0:     // 1101 0000
+                PORTC = 0x42;  // 0100 0010
+                break;
+            case 0xB0:     // 1011 0000
+                PORTC = 0x40;  // 0100 0000
+                break;
+            case 0x70:     // 0111 0000
+                PORTC = 0x00;  // 0000 0000
+                break;
+        }
+    }
+}
